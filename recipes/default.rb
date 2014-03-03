@@ -41,6 +41,7 @@ end
 
 chef_gem "fog" do
   action :install
+  version node['route53']['fog_version']
 end
 
 require 'rubygems'
