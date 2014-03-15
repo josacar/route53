@@ -2,14 +2,14 @@
 require 'chefspec'
 
 # Uncomment to use ChefSpec's Berkshelf extension
-require 'chefspec/berkshelf'
+# require 'chefspec/berkshelf'
 # require 'chefspec/cacher'
 
 require_relative 'support/shared_context'
 
 RSpec.configure do |config|
   # Specify the path for Chef Solo to find cookbooks
-  # config.cookbook_path = '/var/cookbooks'
+  config.cookbook_path = 'cookbooks'
 
   # Specify the path for Chef Solo to find roles
   # config.role_path = '/var/roles'
