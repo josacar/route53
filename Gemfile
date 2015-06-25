@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem 'emeril', :group => :release
 gem 'rake'
+gem 'berkshelf'
 
 group :integration do
   gem "test-kitchen"

@@ -18,6 +18,10 @@ def ttl
   @ttl ||= new_resource.ttl
 end
 
+def alias_target
+  @alias_target ||= new_resource.alias_target
+end
+
 def overwrite?
   @overwrite ||= new_resource.overwrite
 end
@@ -49,13 +53,10 @@ def route53
 end
 
 def resource_record_set
-  {
-    name: name,
-    type: type,
-    ttl: ttl,
-    resource_records:
-      value.sort.map{|v| {value: v} }
-  }
+  rrs = { name: name, type: type, ttl: ttl }
+  rrs.merge!(resource_records: value.sort.map{ |v| { value: v } }) unless value.nil?
+  rrs.merge!(alias_target: alias_target.to_hash) unless alias_target.nil?
+  rrs
 end
 
 def current_resource_record_set
@@ -66,23 +67,21 @@ def current_resource_record_set
       start_record_name: name
     )
 
-  # Select current resource record set by name
+  # Select current resource record set by name and type ( if not will destroy other records )
   current = lrrs[:resource_record_sets].
-    select{ |rr| rr[:name] == name }.first
+    detect { |rr| rr[:name] == name && rr[:type] == type }
+
+  return {} if current
 
   # return as hash, converting resource record
   # array of structs to array of hashes
-  if current
-    {
-      name: current[:name],
-      type: current[:type],
-      ttl: current[:ttl],
-      resource_records:
-        current[:resource_records].sort.map{ |rrr| rrr.to_h }
-    }
-  else
-    {}
-  end
+  {
+    name: current[:name],
+    type: current[:type],
+    ttl: current[:ttl],
+    resource_records: current[:resource_records].sort.map{ |rrr| rrr.to_h } if current[:resource_records]
+    alias_target: current[:alias_target] if current[:alias_target]
+  }
 end
 
 def change_record(action)

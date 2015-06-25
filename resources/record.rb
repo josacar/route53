@@ -11,5 +11,5 @@ attribute :aws_access_key_id,     :kind_of => String
 attribute :aws_secret_access_key, :kind_of => String
 attribute :aws_region,            :kind_of => String, :default => 'us-east-1'
 attribute :overwrite,             :kind_of => [ TrueClass, FalseClass ], :default => true
-# attribute :alias_target,          :kind_of => Hash
+attribute :alias_target,          :kind_of => Hash
 attribute :mock,                  kind_of: [TrueClass, FalseClass], default: false
